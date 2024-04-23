@@ -16,5 +16,8 @@ func main() {
 	http.HandleFunc("/login", src.Login)
 	http.HandleFunc("/register", src.Register)
 	http.HandleFunc("/create", src.CreateQrCode)
+	http.HandleFunc("/registerQR", src.RegisterQR)
+	http.HandleFunc("/listeQR", src.ListeQR)
+	http.HandleFunc("/Profile", src.Profile)
 	http.ListenAndServe(port, nil)
 }

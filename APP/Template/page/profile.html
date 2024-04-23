@@ -1,0 +1,19 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body>
+    {{block "header" .}}
+    {{end}}
+    <h1>Profile</h1>
+    <div>
+        <h2>Informations</h2>
+        <p>Nom: {{.Nom}}</p>
+        <p>Prénom: {{.Prenom}}</p>
+        <p>Email: {{.Email}}</p>
+    {{block "footer" .}}
+    {{end}}
+</body>
+</html>
