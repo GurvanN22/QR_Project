@@ -20,24 +20,32 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateQrCode(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "qrcode.html", nil)
+	renderTemplate(w, "createQrcode.html", nil)
 }
 func RegisterQR(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "registerQR.html", nil)
 }
 func ListeQR(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(cookie)
+
+	// sessionToken := cookie.Value
+	// if sessionToken == "" {
+	// 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	// 	return
+	// }
 	renderTemplate(w, "listeQR.html", nil)
 }
 func Profile(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "profile.html", nil)
-}
-
-func Create_user(w http.ResponseWriter, r *http.Request) {
-	_, err := http.Get("http://localhost:4000/createUser")
-	if err != nil {
-		fmt.Println(err)
-	}
-	http.Redirect(w, r, "/login?message=user+created", http.StatusSeeOther)
 }
 
 // RenderTemplate & TemplateCache

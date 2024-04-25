@@ -13,11 +13,12 @@ func main() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", assets))
 	fmt.Println("http://localhost" + port + " 🚀")
 	// Page
+	http.HandleFunc("/loginCookie", src.LoginHandler)
 	http.HandleFunc("/", src.Home)
 	http.HandleFunc("/login", src.Login)
 	http.HandleFunc("/register", src.Register)
-	http.HandleFunc("/create", src.CreateQrCode)
-	http.HandleFunc("/registerQR", src.RegisterQR)
+	http.HandleFunc("/createqr", src.CreateQrCode)
+	http.HandleFunc("/registerqr", src.RegisterQR)
 	http.HandleFunc("/listeQR", src.ListeQR)
 	http.HandleFunc("/Profile", src.Profile)
 	// API call

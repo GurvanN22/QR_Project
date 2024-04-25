@@ -2,17 +2,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/global.css">
     <title>Document</title>
 </head>
 <body>
     {{block "header" .}}
     {{end}}
     <div>
-        <h1>Déposer vos QRcode</h1>
-        <form action="registerQR" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" id="file">
-            <input type="submit" value="Envoyer">
+        <div>
+            <h1>Déposer vos QRcode</h1>
+            <form action="registerQR" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="file">
+                <input type="submit" value="Envoyer">
         </div>
+        <div>
+            <h2>
+                Scan QR code
+            </h2>
+        </div>
+    </div>
     {{block "footer" .}}
     {{end}}
 </body>
