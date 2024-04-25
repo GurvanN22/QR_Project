@@ -15,8 +15,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "login.html", nil)
 }
 func Register(w http.ResponseWriter, r *http.Request) {
+
 	renderTemplate(w, "register.html", nil)
 }
+
 func CreateQrCode(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "qrcode.html", nil)
 }
@@ -28,6 +30,14 @@ func ListeQR(w http.ResponseWriter, r *http.Request) {
 }
 func Profile(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "profile.html", nil)
+}
+
+func Create_user(w http.ResponseWriter, r *http.Request) {
+	_, err := http.Get("http://localhost:4000/createUser")
+	if err != nil {
+		fmt.Println(err)
+	}
+	http.Redirect(w, r, "/login?message=user+created", http.StatusSeeOther)
 }
 
 // RenderTemplate & TemplateCache
