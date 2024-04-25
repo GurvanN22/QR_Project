@@ -10,3 +10,11 @@ func CheckRequestMethodPost(w http.ResponseWriter, r *http.Request) bool {
 	}
 	return true
 }
+
+func CheckRequestMethodGet(w http.ResponseWriter, r *http.Request) bool {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return false
+	}
+	return true
+}
