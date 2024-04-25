@@ -8,23 +8,22 @@ import (
 	"net/http"
 )
 
-func Connect_user(w http.ResponseWriter, r *http.Request) {
+func Info_image(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
-	if !tools.CheckRequestMethodPost(w, r) {
+	if !tools.CheckRequestMethodGet(w, r) {
 		return
 	}
 	// We get the data from the request
-	email := r.FormValue("email")
-	password := r.FormValue("password")
+	id := r.FormValue("id")
 
 	// We check if the fields are not empty
-	if email == "" || password == "" {
+	if id == "" {
 		// Create a response JSON object
 		response := struct {
 			Message string `json:"message"`
 			CODE    int    `json:"code"`
 		}{
-			Message: "missing field : email or password",
+			Message: "wrong field : id",
 			CODE:    400,
 		}
 
@@ -46,63 +45,57 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	var id string
 	// We get the name, email, and password from the database
-	rows, err := db.Query("SELECT id FROM user WHERE email = ? AND password = ?;", email, password)
+	rows, err := db.Query("SELECT id, user_id , link , created_at FROM qrcode WHERE user_id = ?;", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
+	var image_id, user_id, link, created_at string
 	if rows.Next() {
-		err := rows.Scan(&id)
+
+		err := rows.Scan(&image_id, &user_id, &link, &created_at)
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else {
 		// Create a response JSON object
-		type Response struct {
-			Message string
-			Code    int
+		response := struct {
+			Image_id   string `json:"image_id"`
+			User_id    string `json:"user_id"`
+			Link       string `json:"link"`
+			Created_at string `json:"created_at"`
+		}{
+			Image_id:   image_id,
+			User_id:    user_id,
+			Link:       link,
+			Created_at: created_at,
 		}
-
-		var response = Response{
-			Message: "user not found",
-			Code:    404,
-		}
-
 		// Convert the response object to JSON
 		jsonResponse, err := json.Marshal(response)
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		// Write the JSON response to the http.ResponseWriter
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+	} else {
+		// Create a response JSON object
+		response := struct {
+			Message string `json:"message"`
+			CODE    int    `json:"code"`
+		}{
+			Message: "user not found",
+			CODE:    400,
+		}
+		// Convert the response object to JSON
+		jsonResponse, err := json.Marshal(response)
+		if err != nil {
+			log.Fatal(err)
+		}
 		// Write the JSON response to the http.ResponseWriter
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonResponse)
 		return
-
 	}
-	// Create a response JSON object
-
-	type Response struct {
-		Message string
-		Id      string
-		Code    int
-	}
-
-	var response = Response{
-		Message: "user found",
-		Id:      id,
-		Code:    200,
-	}
-
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Write the JSON response to the http.ResponseWriter
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonResponse)
 }
