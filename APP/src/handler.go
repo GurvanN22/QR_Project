@@ -1,6 +1,7 @@
 package src
 
 import (
+	"app/src/tools"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -17,8 +18,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "register.html", nil)
 }
+
 func CreateQrCode(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "qrcode.html", nil)
+	tools.CheckCookie(w, r)
+	renderTemplate(w, "createQrcode.html", nil)
+}
+func RegisterQR(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
+	renderTemplate(w, "registerQR.html", nil)
+}
+func ListeQR(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
+	renderTemplate(w, "listeQR.html", nil)
+}
+func Profile(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
+	renderTemplate(w, "profile.html", nil)
 }
 
 // RenderTemplate & TemplateCache

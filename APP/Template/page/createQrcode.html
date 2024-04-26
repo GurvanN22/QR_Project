@@ -1,0 +1,22 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/global.css">
+    <link rel="stylesheet" href="./assets/css/createqr.css">
+    <title> QR's</title>
+</head>
+<body>
+    {{block "header" .}}
+    {{end}}
+    <div class="qr-create">
+        <h1>Create a QR Code </h1>
+        <form action="/result" method="post">
+            <input type="text" name = 'input' placeholder="https://exemple.fr" required/>
+        </form>
+    </div>
+{{block "footer" .}}
+{{end}}
+</body>
+<script src="./assets/js/result.js"></script>
+</html>
