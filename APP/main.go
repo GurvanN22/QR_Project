@@ -4,11 +4,17 @@ import (
 	"app/src"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 const port = ":8080"
 
 func main() {
+	staticDir := "./static"
+	if _, err := os.Stat(staticDir); os.IsNotExist(err) {
+		os.Mkdir(staticDir, os.ModePerm)
+	}
+
 	assets := http.FileServer(http.Dir("./Template/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", assets))
 	fmt.Println("http://localhost" + port + " 🚀")
@@ -23,5 +29,6 @@ func main() {
 	// call
 	http.HandleFunc("/loginCookie", src.LoginHandler)
 	http.HandleFunc("/createUser", src.Create_user)
+	http.HandleFunc("/submit", src.SubmitLinkQR)
 	http.ListenAndServe(port, nil)
 }

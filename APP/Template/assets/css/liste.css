@@ -1,0 +1,11 @@
+.galerie-page{
+    min-height: 80vh;
+    width: 100%;
+    display: flex;
+    justify-content:center;
+}
+.grid-container{
+    margin: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
