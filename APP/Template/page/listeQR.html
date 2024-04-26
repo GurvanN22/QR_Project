@@ -3,14 +3,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="/assets/css/liste.css">
     <title>Document</title>
 </head>
 <body>
     {{block "header" .}}
     {{end}}
     <h1>Liste des QR code</h1>
-    <div>
-
+    <div class="galerie-page">
+        <div class="grid-container">
+            <div class="items">
+                <a href="/projet?id={{.ID}}" >
+                    <img src="/assets/img/qrcode.png" alt="">
+                    <p>Lien du qr</p>
+                </a>
+            </div>
+        </div>
     </div>
     {{block "footer" .}}
     {{end}}
