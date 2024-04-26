@@ -11,12 +11,11 @@
     {{end}}
     <div class="qr-create">
         <h1>Create a QR Code </h1>
-        <form action="/result" method="post">
-            <input type="text" name = 'input' placeholder="https://exemple.fr" required/>
+        <form action="/submit" method="post">
+            <input type="text" id="link" name="link" placeholder="https://exemple.fr" required/>
         </form>
     </div>
 {{block "footer" .}}
 {{end}}
 </body>
-<script src="./assets/js/result.js"></script>
 </html>

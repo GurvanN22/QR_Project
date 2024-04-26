@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"path/filepath"
+
+	qrcode "github.com/skip2/go-qrcode"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +37,29 @@ func ListeQR(w http.ResponseWriter, r *http.Request) {
 func Profile(w http.ResponseWriter, r *http.Request) {
 	tools.CheckCookie(w, r)
 	renderTemplate(w, "profile.html", nil)
+}
+
+func SubmitLinkQR(w http.ResponseWriter, r *http.Request) {
+	link := r.FormValue("link")
+
+	if link == "" {
+		http.Error(w, "Le lien est vide", http.StatusBadRequest)
+		return
+	}
+
+	qrCode, err := qrcode.Encode(link, qrcode.Medium, 256)
+	if err != nil {
+		http.Error(w, "Erreur lors de la génération du QR code", http.StatusInternalServerError)
+		return
+	}
+
+	err = os.WriteFile("static/qrcode.png", qrCode, 0644)
+	if err != nil {
+		http.Error(w, "Erreur lors de l'enregistrement du QR code", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/listeQR", http.StatusSeeOther)
 }
 
 // RenderTemplate & TemplateCache
