@@ -8,6 +8,30 @@ import (
 	"net/http"
 )
 
+// Create a response JSON object
+type ConnectUserResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+}
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+}
+
+// Connect_user handles user authentication.
+// @Summary Authenticate user
+// @Description Authenticate user with provided email and password
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param email formData string true "User's email"
+// @Param password formData string true "User's password"
+// @Success 200 {object} ConnectUserResponse "Successfully authenticated"
+// @Failure 400 {object} ErrorResponse "Missing fields"
+// @Failure 404 {object} ErrorResponse "User not found"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /users/connect [post]
 func Connect_user(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodPost(w, r) {
@@ -20,12 +44,9 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 	// We check if the fields are not empty
 	if email == "" || password == "" {
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-		}{
-			Message: "missing field : email or password",
-			CODE:    400,
+		response := ErrorResponse{
+			Message: "missing fields",
+			Code:    400,
 		}
 
 		// Convert the response object to JSON
@@ -47,6 +68,10 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var id string
+
+	// We encrypt the password
+	password = tools.Chiffrement(email, password)
+
 	// We get the name, email, and password from the database
 	rows, err := db.Query("SELECT id FROM user WHERE email = ? AND password = ?;", email, password)
 	if err != nil {
@@ -60,13 +85,8 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 	} else {
-		// Create a response JSON object
-		type Response struct {
-			Message string
-			Code    int
-		}
 
-		var response = Response{
+		var response = ErrorResponse{
 			Message: "user not found",
 			Code:    404,
 		}
@@ -85,14 +105,14 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 	}
 	// Create a response JSON object
 
-	type Response struct {
-		Message string
-		Id      string
-		Code    int
+	type ConnectUserResponse struct {
+		Message string `json:"message"`
+		Id      string `json:"id"`
+		Code    int    `json:"code"`
 	}
 
-	var response = Response{
-		Message: "user found",
+	var response = ConnectUserResponse{
+		Message: "user authenticated",
 		Id:      id,
 		Code:    200,
 	}
