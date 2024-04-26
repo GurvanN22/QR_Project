@@ -18,10 +18,12 @@ func Start_api(port string) {
 
 	// We create the endpoint to create a user
 	http.HandleFunc("/create-user", handlers.Create_user)
-	http.HandleFunc("/info-user", handlers.Info_user)
 	http.HandleFunc("/connect-user", handlers.Connect_user)
+	http.HandleFunc("/info-user", handlers.Info_user)
+
 	http.HandleFunc("/new-image", handlers.New_image)
 	http.HandleFunc("/info-image", handlers.Info_image)
+	http.HandleFunc("/delete-image", handlers.Delete_image)
 
 	// We start the server
 	fmt.Println("✅ Server running on port :", port)
