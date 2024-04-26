@@ -9,6 +9,22 @@ import (
 	"os"
 )
 
+type Response struct {
+	Code    int
+	Message string
+}
+
+// Delete_image handles deletion of an image by ID.
+// @Summary Delete an image
+// @Description Delete an image by ID
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Param id query string true "Image ID to delete"
+// @Success 200 {object} Response "Image deleted"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /delete-image [delete]
 func Delete_image(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodDelete(w, r) {
@@ -36,11 +52,6 @@ func Delete_image(w http.ResponseWriter, r *http.Request) {
 	err = os.Remove("db/images/" + id + ".png")
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	type Response struct {
-		Code    int
-		Message string
 	}
 
 	response := Response{

@@ -8,6 +8,28 @@ import (
 	"net/http"
 )
 
+type UserInfoResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+	DATA    struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password int    `json:"password"`
+	}
+}
+
+// Info_user handles retrieval of user information by ID.
+// @Summary Get user information
+// @Description Get information about a user by ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id query string true "User ID to retrieve information"
+// @Success 200 {object} UserInfoResponse "User information"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 404 {object} ErrorResponse "User not found"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /info-user [get]
 func Info_user(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodGet(w, r) {
@@ -19,12 +41,9 @@ func Info_user(w http.ResponseWriter, r *http.Request) {
 	// We check if the fields are not empty
 	if id == "" {
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-		}{
+		response := ErrorResponse{
 			Message: "wrong field : id",
-			CODE:    400,
+			Code:    400,
 		}
 
 		// Convert the response object to JSON
@@ -59,27 +78,14 @@ func Info_user(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-			DATA    struct {
-				Name     string `json:"name"`
-				Email    string `json:"email"`
-				Password int    `json:"password"`
-			}
-		}{
-			Message: "user's information",
-			CODE:    200,
-			DATA: struct {
-				Name     string `json:"name"`
-				Email    string `json:"email"`
-				Password int    `json:"password"`
-			}{
-				Name:     name,
-				Email:    email,
-				Password: len(password),
-			},
+		response := UserInfoResponse{
+			Message: "user found",
+			Code:    200,
 		}
+		response.DATA.Name = name
+		response.DATA.Email = email
+		response.DATA.Password = len(password)
+
 		// Convert the response object to JSON
 		jsonResponse, err := json.Marshal(response)
 		if err != nil {
@@ -90,13 +96,11 @@ func Info_user(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonResponse)
 	} else {
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-		}{
-			Message: "user not found",
-			CODE:    400,
+		response := ErrorResponse{
+			Message: "no data found",
+			Code:    404,
 		}
+
 		// Convert the response object to JSON
 		jsonResponse, err := json.Marshal(response)
 		if err != nil {

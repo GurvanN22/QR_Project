@@ -13,14 +13,50 @@ import (
 	"time"
 )
 
+type NewImageResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code"`
+	ID      string `json:"id"`
+}
+
+// New_image handles creation of a new image.
+// @Summary Create a new image
+// @Description Create a new image with provided file
+// @Tags images
+// @Accept  multipart/form-data
+// @Produce  json
+// @Param file formData file true "Image file"
+// @Param link formData string true "Image link"
+// @Param user_id formData string true "User ID"
+// @Success 200 {object} NewImageResponse "Image added successfully"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /new-image [post]
 func New_image(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodPost(w, r) {
 		return
 	}
 	// We get the img from the request
-	link := "link.com"
-	user_id := 1
+	link := r.FormValue("link")
+	user_id := r.FormValue("user_id")
+
+	if link == "" || user_id == "" {
+		response := ErrorResponse{
+			Message: "Bad request",
+			Code:    400,
+		}
+		jsonResponse, err := json.Marshal(response)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Write the JSON response to the http.ResponseWriter
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+		return
+	}
+
 	// Parse the multipart form to get the uploaded file
 	err := r.ParseMultipartForm(10 << 20) // 10MB max size
 	if err != nil {
@@ -78,13 +114,8 @@ func New_image(w http.ResponseWriter, r *http.Request) {
 
 	///////////////////////////////////////////////
 	// Return success
-	type Response struct {
-		Message string
-		Code    int
-		ID      string
-	}
 
-	response := Response{
+	response := NewImageResponse{
 		Message: "Image added successfully",
 		Code:    200,
 		ID:      id,

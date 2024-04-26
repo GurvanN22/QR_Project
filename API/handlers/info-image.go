@@ -8,6 +8,25 @@ import (
 	"net/http"
 )
 
+type ImageInfoResponse struct {
+	Image_id   string `json:"image_id"`
+	User_id    string `json:"user_id"`
+	Link       string `json:"link"`
+	Created_at string `json:"created_at"`
+}
+
+// Info_image handles retrieval of image information by user ID.
+// @Summary Get image information
+// @Description Get information about images by user ID
+// @Tags images
+// @Accept  json
+// @Produce  json
+// @Param id query string true "User ID to retrieve image information"
+// @Success 200 {array} ImageInfoResponse "Image information"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Failure 404 {object} ErrorResponse "No data found"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /info-image [get]
 func Info_image(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodGet(w, r) {
@@ -52,18 +71,11 @@ func Info_image(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	type Response struct {
-		Image_id   string
-		User_id    string
-		Link       string
-		Created_at string
-	}
-
-	var result []Response
+	var result []ImageInfoResponse
 	for rows.Next() {
 
 		var image_id, user_id, link, created_at string
-		var res Response
+		var res ImageInfoResponse
 		// We return all the images data link to the user by the id of the user , here we use a loop to get all the data
 		err := rows.Scan(&image_id, &user_id, &link, &created_at)
 
@@ -82,12 +94,9 @@ func Info_image(w http.ResponseWriter, r *http.Request) {
 	// We check if the user exists
 	if len(result) == 0 {
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-		}{
+		response := ErrorResponse{
 			Message: "no data found",
-			CODE:    400,
+			Code:    404,
 		}
 
 		// Convert the response object to JSON

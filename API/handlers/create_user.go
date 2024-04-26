@@ -8,6 +8,24 @@ import (
 	"net/http"
 )
 
+type CreateUserResponse struct {
+	Message string `json:"message"`
+	ID      int64  `json:"id"`
+	Code    int    `json:"code"`
+}
+
+// @Summary Create a new user
+// @Description Create a new user with provided name, email, and password
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param pseudo formData string true "User's pseudo"
+// @Param email formData string true "User's email"
+// @Param password formData string true "User's password"
+// @Success 200 {object} CreateUserResponse "Successfully created user"
+// @Failure 400 {object} ErrorResponse "Missing fields"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Router /create-user [post]
 func Create_user(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
 	if !tools.CheckRequestMethodPost(w, r) {
@@ -21,12 +39,9 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 	// We check if the fields are not empty
 	if name == "" || email == "" || password == "" {
 		// Create a response JSON object
-		response := struct {
-			Message string `json:"message"`
-			CODE    int    `json:"code"`
-		}{
-			Message: "missing field : pseudo, email or password",
-			CODE:    400,
+		response := ErrorResponse{
+			Message: "missing fields",
+			Code:    400,
 		}
 
 		// Convert the response object to JSON
@@ -40,6 +55,9 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 		w.Write(jsonResponse)
 		return
 	}
+
+	// We encrypt the password with a homemade encryption method
+	password = tools.Chiffrement(email, password)
 
 	db, err := sql.Open("sqlite3", "db/data.sqlite3")
 	if err != nil {
@@ -57,14 +75,10 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a response JSON object
-	response := struct {
-		Message string `json:"message"`
-		ID      int64  `json:"id"`
-		CODE    int    `json:"code"`
-	}{
+	response := CreateUserResponse{
 		Message: "user created",
 		ID:      id,
-		CODE:    200,
+		Code:    200,
 	}
 
 	// Convert the response object to JSON
