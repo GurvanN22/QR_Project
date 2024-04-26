@@ -1,6 +1,7 @@
 package src
 
 import (
+	"app/src/tools"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -15,36 +16,23 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "login.html", nil)
 }
 func Register(w http.ResponseWriter, r *http.Request) {
-
 	renderTemplate(w, "register.html", nil)
 }
 
 func CreateQrCode(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
 	renderTemplate(w, "createQrcode.html", nil)
 }
 func RegisterQR(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
 	renderTemplate(w, "registerQR.html", nil)
 }
 func ListeQR(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session_token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	fmt.Println(cookie)
-
-	// sessionToken := cookie.Value
-	// if sessionToken == "" {
-	// 	http.Redirect(w, r, "/login", http.StatusSeeOther)
-	// 	return
-	// }
+	tools.CheckCookie(w, r)
 	renderTemplate(w, "listeQR.html", nil)
 }
 func Profile(w http.ResponseWriter, r *http.Request) {
+	tools.CheckCookie(w, r)
 	renderTemplate(w, "profile.html", nil)
 }
 
