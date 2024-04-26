@@ -52,50 +52,62 @@ func Info_image(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var image_id, user_id, link, created_at string
-	if rows.Next() {
+	type Response struct {
+		Image_id   string
+		User_id    string
+		Link       string
+		Created_at string
+	}
 
+	var result []Response
+	for rows.Next() {
+
+		var image_id, user_id, link, created_at string
+		var res Response
+		// We return all the images data link to the user by the id of the user , here we use a loop to get all the data
 		err := rows.Scan(&image_id, &user_id, &link, &created_at)
+
+		res.Created_at = created_at
+		res.Image_id = image_id
+		res.User_id = user_id
+		res.Link = link
+
+		result = append(result, res)
+
 		if err != nil {
 			log.Fatal(err)
 		}
-		// Create a response JSON object
-		response := struct {
-			Image_id   string `json:"image_id"`
-			User_id    string `json:"user_id"`
-			Link       string `json:"link"`
-			Created_at string `json:"created_at"`
-		}{
-			Image_id:   image_id,
-			User_id:    user_id,
-			Link:       link,
-			Created_at: created_at,
-		}
-		// Convert the response object to JSON
-		jsonResponse, err := json.Marshal(response)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// Write the JSON response to the http.ResponseWriter
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(jsonResponse)
-	} else {
+	}
+
+	// We check if the user exists
+	if len(result) == 0 {
 		// Create a response JSON object
 		response := struct {
 			Message string `json:"message"`
 			CODE    int    `json:"code"`
 		}{
-			Message: "user not found",
+			Message: "no data found",
 			CODE:    400,
 		}
+
 		// Convert the response object to JSON
 		jsonResponse, err := json.Marshal(response)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		// Write the JSON response to the http.ResponseWriter
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonResponse)
 		return
 	}
+
+	// Convert the response object to JSON
+	jsonResponse, err := json.Marshal(result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Write the JSON response to the http.ResponseWriter
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResponse)
 }
