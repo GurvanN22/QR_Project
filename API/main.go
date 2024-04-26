@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/data_functions"
+	"api/server"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,12 +19,12 @@ func main() {
 		println("✅ The .env file has been loaded successfully")
 	}
 	// We extract the data from the .env file
-	//port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 	fill := os.Getenv("DATA_FILL")
 	database_path = os.Getenv("DATA_BASE_FILE")
 
 	// We connect to the database
 	data_functions.CheckDataPath(database_path, fill)
 
-	//server.Start_api(port)
+	server.Start_api(port)
 }
