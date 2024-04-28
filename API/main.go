@@ -2,9 +2,7 @@ package main
 
 import (
 	"api/data_functions"
-	"api/handlers/tools"
 	"api/server"
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -27,7 +25,5 @@ func main() {
 
 	// We connect to the database
 	data_functions.CheckDataPath(database_path, fill)
-
-	fmt.Println(tools.Chiffrement("admin@exemple.com", "admin"))
 	server.Start_api(port)
 }

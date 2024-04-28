@@ -2,8 +2,8 @@ package src
 
 import (
 	"app/src/tools"
+	"bytes"
 	"net/http"
-	"os"
 
 	qrcode "github.com/skip2/go-qrcode"
 )
@@ -34,7 +34,6 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 	tools.CheckCookie(w, r)
 	tools.RenderTemplate(w, "profile.html", nil)
 }
-
 func SubmitLinkQR(w http.ResponseWriter, r *http.Request) {
 	link := r.FormValue("link")
 
@@ -49,10 +48,30 @@ func SubmitLinkQR(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = os.WriteFile("static/qrcode.png", qrCode, 0644)
+	// err = os.WriteFile("static/qrcode.png", qrCode, 0644)
+	// if err != nil {
+	// 	http.Error(w, "Erreur lors de l'enregistrement du QR code", http.StatusInternalServerError)
+	// 	return
+	// }
+
+	apiURL := "https://localhost:4000/new-image"
+	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(qrCode))
 	if err != nil {
-		http.Error(w, "Erreur lors de l'enregistrement du QR code", http.StatusInternalServerError)
+		http.Error(w, "Erreur lors de la création de la requête", http.StatusInternalServerError)
 		return
 	}
+	req.Header.Set("Content-Type", "image/png")
 
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, "Erreur lors de l'envoi du QR code à l'API", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, "Erreur lors de la réponse de l'API", http.StatusInternalServerError)
+		return
+	}
 }

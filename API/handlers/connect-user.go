@@ -121,8 +121,12 @@ func Connect_user(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var userID int
+	err = db.QueryRow("SELECT id FROM user WHERE email = ? AND password = ?", email, password).Scan(&userID)
+	if err != nil {
+		http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+		return
+	}
 
-	// Write the JSON response to the http.ResponseWriter
-	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonResponse)
 }

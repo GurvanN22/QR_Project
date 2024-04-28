@@ -22,6 +22,7 @@ func Start_api(port string) {
 	http.HandleFunc("/new-image", handlers.New_image)
 	http.HandleFunc("/info-image", handlers.Info_image)
 	http.HandleFunc("/delete-image", handlers.Delete_image)
+	http.HandleFunc("/cookie", handlers.SaveCookie)
 
 	// We start the server
 	fmt.Println("✅ Server running on port :", port)

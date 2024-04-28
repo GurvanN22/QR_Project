@@ -4,6 +4,7 @@ import (
 	"api/handlers/tools"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -59,7 +60,7 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 	// We encrypt the password with a homemade encryption method
 	password = tools.Chiffrement(email, password)
 
-	db, err := sql.Open("sqlite3", "db/data.sqlite3")
+	db, err := sql.Open("sqlite3", "./db/data.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,10 +69,11 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 	result, err := db.Exec("INSERT INTO user (name,email,password) VALUES (?,?,?);", name, email, password)
 	if err != nil {
 		log.Fatal(err)
+		fmt.Printf("error")
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("error 2")
 	}
 
 	// Create a response JSON object

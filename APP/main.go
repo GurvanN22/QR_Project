@@ -27,8 +27,10 @@ func main() {
 	http.HandleFunc("/listeQR", src.ListeQR)
 	http.HandleFunc("/Profile", src.Profile)
 	// call
-	http.HandleFunc("/loginCookie", src.LoginHandler)
-	http.HandleFunc("/createUser", src.Create_user)
+	http.HandleFunc("/loginVerif", src.LoginHandler)
+	http.HandleFunc("/Create_user", src.Create_user)
 	http.HandleFunc("/submit", src.SubmitLinkQR)
+	http.HandleFunc("/cookieHandler", src.CookieHandler)
+	http.HandleFunc("/upload_file", src.ImageUploadHandler)
 	http.ListenAndServe(port, nil)
 }

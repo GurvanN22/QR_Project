@@ -3,29 +3,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="/assets/css/register.css">
     <title>register</title>
 </head>
 <body>
 {{block "header" .}}
 {{end}}
     
-<form action="">
-    <div>
+<div class="register-page">
+  <form action="/Create_user">
       <h1>Register</h1>
+      <label for="pseudo"><b>Name</b></label>
+      <input type="text" placeholder="John Doe" name="pseudo" id="pseudo" required>
+      
       <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" id="email" required>
-      <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
-      <label for="psw-repeat"><b>Repeat Password</b></label>
-      <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
-      <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
-      <button type="submit" class="registerbtn">Register</button>
-    </div>
+      <input type="email" placeholder="email@example.com" name="email" id="email" required>
     
-    <div class="container signin">
+      <label for="password"><b>Password</b></label>
+      <input type="password" placeholder="@1234azerAZER" name="password" id="password" required>
+    
+      <p>By creating an account you agree to our <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Terms & Privacy</a>.</p>
       <p>Already have an account? <a href="login">Sign in</a>.</p>
-    </div>
-  </form>
+      <input type="submit" class="registerbtn"></input>
+      
+    </form>
+  </div>
 {{block "footer" .}}
 {{end}}
 </body>
