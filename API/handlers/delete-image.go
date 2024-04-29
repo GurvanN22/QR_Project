@@ -38,15 +38,27 @@ func Delete_image(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+
 	q, err := db.Prepare("DELETE FROM qrcode WHERE ? = id;")
 	if err != nil {
 		log.Fatal(err)
 	}
 	_, err = q.Exec(id)
 	if err != nil {
-		log.Fatal(err)
+		response := Response{
+			Code:    404,
+			Message: "Image not found",
+		}
+		jsonResponse, err := json.Marshal(response)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// Write the JSON response to the http.ResponseWriter
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+		return
 	}
-	db.Close()
 
 	// We delete the image from db/images folder
 	err = os.Remove("db/images/" + id + ".png")
