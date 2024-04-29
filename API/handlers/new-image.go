@@ -34,6 +34,7 @@ type NewImageResponse struct {
 // @Router /new-image [post]
 func New_image(w http.ResponseWriter, r *http.Request) {
 	// We check the request method
+	fmt.Println(r)
 	if !tools.CheckRequestMethodPost(w, r) {
 		return
 	}

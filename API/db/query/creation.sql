@@ -17,6 +17,5 @@ CREATE TABLE session_cookie (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     session_id VARCHAR(255),
-    expiry_time DATETIME,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );

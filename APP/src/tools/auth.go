@@ -13,7 +13,6 @@ func AuthenticateUser(email, password string) (string, error) {
 	formData := url.Values{}
 	formData.Set("email", email)
 	formData.Set("password", password)
-	// Envoyer une requête POST à l'API pour authentifier l'utilisateur
 	resp, err := http.Post("http://localhost:4000/connect-user", "application/json", strings.NewReader(formData.Encode()))
 	if err != nil {
 		return "", err

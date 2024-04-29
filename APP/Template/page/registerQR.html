@@ -12,10 +12,13 @@
     {{end}}
     <div class="qr-register">
         <h1>Déposer vos QRcode</h1>
-        <form action="/upload_file" method="post" enctype="multipart/form-data">
+        <form action="/upload" method="post" enctype="multipart/form-data">
                 <div class="download">
-                <input type="file" name="file" id="file">
-                <input type="submit" value="Envoyer">
+                    <label for="image">Choose Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*"><br><br>
+                    <label for="link">Image Link:</label>
+                    <input type="text" id="link" name="link" placeholder="https://exemple.fr"><br><br>
+                    <input type="submit" value="Upload" />
             </div>
             </form>
     </div>

@@ -7,16 +7,14 @@
     <title>Profile</title>
 </head>
 <body>
-    {{block "header" .}}
-    {{end}}
+    {{template "header" .}}
     <div class="profile-page">
         <h1>Profile</h1>
         <h2>Informations</h2>
-        <p>Nom: {{.Nom}}</p>
-        <p>Prénom: {{.Prenom}}</p>
-        <p>Email: {{.Email}}</p>
+        <p>Nom: {{.Profiledata.Name}}</p>
+        <p>Email: {{.Profiledata.Email}}</p>
+        <p>Password lenght: {{.Profiledata.Password}}</p>
     </div>
-    {{block "footer" .}}
-    {{end}}
+    {{template "footer" .}}
 </body>
 </html>

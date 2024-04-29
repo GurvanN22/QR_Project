@@ -112,3 +112,67 @@ func Info_user(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func GetidByEamilH(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	id, err := GetIDByEmail(email)
+	if err != nil {
+		http.Error(w, "Erreur lors de la récupération de l'ID de l'utilisateur", http.StatusInternalServerError)
+		return
+	}
+	if id == "" {
+		http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+		return
+	}
+	w.Write([]byte(id))
+}
+func GetIDByEmail(email string) (string, error) {
+	db, err := sql.Open("sqlite3", "db/data.sqlite3")
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	var id string
+	err = db.QueryRow("SELECT id FROM user WHERE email = ?;", email).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", nil // User not found
+		}
+		return "", err
+	}
+
+	return id, nil
+}
+
+func GetIdByCookie(cookie string) (string, error) {
+	db, err := sql.Open("sqlite3", "db/data.sqlite3")
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	var id string
+	err = db.QueryRow("SELECT user_id FROM session_cookie WHERE session_id = ?;", cookie).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", nil // User not found
+		}
+		return "", err
+	}
+
+	return id, nil
+}
+
+func GetIdByCookieH(w http.ResponseWriter, r *http.Request) {
+	cookie := r.FormValue("cookie")
+	id, err := GetIdByCookie(cookie)
+	if err != nil {
+		http.Error(w, "Erreur lors de la récupération de l'ID de l'utilisateur", http.StatusInternalServerError)
+		return
+	}
+	if id == "" {
+		http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+		return
+	}
+	w.Write([]byte(id))
+}

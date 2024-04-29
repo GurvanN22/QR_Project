@@ -25,20 +25,23 @@ type CreateUserResponse struct {
 // @Param password formData string true "User's password"
 // @Success 200 {object} CreateUserResponse "Successfully created user"
 // @Failure 400 {object} ErrorResponse "Missing fields"
-// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Failure 500 {object} ErrorResponse "Internal server error"s
 // @Router /create-user [post]
 func Create_user(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Println(r)
 	// We check the request method
 	if !tools.CheckRequestMethodPost(w, r) {
 		return
 	}
 	// We get the data from the request
-	name := r.FormValue("pseudo")
+	name := r.FormValue("name")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
 	// We check if the fields are not empty
 	if name == "" || email == "" || password == "" {
+		fmt.Println("missing fields")
 		// Create a response JSON object
 		response := ErrorResponse{
 			Message: "missing fields",

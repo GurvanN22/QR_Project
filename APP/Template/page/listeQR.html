@@ -12,12 +12,15 @@
     <h1>Liste des QR code</h1>
     <div class="galerie-page">
         <div class="grid-container">
+            {{range .Images}}
             <div class="items">
-                <a href="/projet?id={{.ID}}" >
-                    <img src="/assets/img/qrcode.png" alt="">
-                    <p>Lien du qr</p>
+
+                
+                    <img src="http://localhost:4000/images/{{.ImageID}}" alt="">
+                    <a href="{{.Link}}" target="_blank"><p>Lien du qr</p></a><p>Created At: {{.CreatedAt}}</p>
                 </a>
             </div>
+            {{end}}
         </div>
     </div>
     {{block "footer" .}}
