@@ -25,7 +25,6 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	// Send the POST request to the API with the form values as query parameters
 	resp, err := http.Post(fmt.Sprintf("http://localhost:4000/create-user?name=%s&email=%s&password=%s", name, email, password), "", nil)
 	if err != nil {
 		http.Error(w, "Erreur lors de l'envoi de la requête à l'API", http.StatusInternalServerError)
@@ -38,27 +37,21 @@ func Create_user(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a struct to store the response data
 	var response struct {
 		Message string `json:"message"`
 	}
 
-	// Unmarshal the response JSON into the struct
 	err = json.Unmarshal(responseData, &response)
 	if err != nil {
 		http.Error(w, "Erreur lors de la conversion de la réponse en JSON", http.StatusInternalServerError)
 		return
 	}
 
-	// Print the message from the response
-	fmt.Println(response.Message)
-
 	if resp.StatusCode != http.StatusOK {
 		http.Error(w, "Erreur lors de la création de l'utilisateur sur l'API", http.StatusInternalServerError)
 		return
 	}
 
-	// Rediriger l'utilisateur vers une page de confirmation
 	http.Redirect(w, r, "/login?message=user+created", http.StatusSeeOther)
 }
 

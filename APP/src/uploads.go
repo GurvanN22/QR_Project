@@ -14,21 +14,17 @@ import (
 )
 
 func UploadImage(w http.ResponseWriter, r *http.Request) {
-	// Parse form data
-	err := r.ParseMultipartForm(10 << 20) // 10MB max size
+	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "Failed to parse multipart form", http.StatusInternalServerError)
 		return
 	}
-
-	// Get form data
 	link := r.FormValue("link")
 	userId, err := tools.GetIdByCookie(w, r)
 	if err != nil {
 		http.Error(w, "Erreur lors de la récupération de l'ID utilisateur", http.StatusInternalServerError)
 		return
 	}
-	// Retrieve the uploaded file
 	file, _, err := r.FormFile("image")
 	if err != nil {
 		http.Error(w, "No file uploaded", http.StatusBadRequest)
@@ -36,40 +32,27 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// Buffer to store the file data
 	var buf bytes.Buffer
 
-	// Copy file data to buffer
 	if _, err := io.Copy(&buf, file); err != nil {
 		http.Error(w, "Failed to read file", http.StatusInternalServerError)
 		return
 	}
 
-	// Create a new multipart writer
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-
-	// Write form fields
 	_ = writer.WriteField("link", link)
 	_ = writer.WriteField("user_id", strconv.Itoa(userId))
-
-	// Write file field
 	fileWriter, _ := writer.CreateFormFile("file", "image.png")
 	_, _ = io.Copy(fileWriter, &buf)
-
-	// Close multipart writer
 	writer.Close()
-
-	// Send POST request to API
-	apiURL := "http://localhost:4000/new-image" // Change this to your API endpoint
-	req, err := http.NewRequest("POST", apiURL, body)
+	req, err := http.NewRequest("POST", "http://localhost:4000/new-image", body)
 	if err != nil {
 		http.Error(w, "Failed to create request", http.StatusInternalServerError)
 		return
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
-	// Send request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -77,14 +60,10 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-
-	// Check response status
 	if resp.StatusCode != http.StatusOK {
 		http.Error(w, "Failed to upload image", resp.StatusCode)
 		return
 	}
-
-	// Display success message
 	fmt.Print(w, "Image uploaded successfully!")
 }
 

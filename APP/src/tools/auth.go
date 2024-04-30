@@ -9,7 +9,6 @@ import (
 )
 
 func AuthenticateUser(email, password string) (string, error) {
-	// Préparer les données du formulaire pour la requête POST
 	formData := url.Values{}
 	formData.Set("email", email)
 	formData.Set("password", password)
@@ -19,12 +18,10 @@ func AuthenticateUser(email, password string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	// Vérifier le code de statut de la réponse
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("erreur lors de l'authentification: %s", resp.Status)
 	}
 
-	// Lire le corps de la réponse JSON
 	var response struct {
 		Message string `json:"message"`
 		ID      string `json:"id"`
