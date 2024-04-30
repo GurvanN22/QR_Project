@@ -13,3 +13,14 @@ The goal of the project is to create a qr code service that allow user to :
 The app is in two part the API and the web server.
 
 
+## Lancement projet
+### APP
+```bash
+cd APP
+go run main.go
+```
+### API
+```bash
+cd API
+go run main.go
+```
