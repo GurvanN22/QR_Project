@@ -8,7 +8,7 @@ import (
 func CheckCookie(w http.ResponseWriter, r *http.Request) bool {
 	cookie, err := r.Cookie("session_id")
 	if err != nil || cookie == nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/register", http.StatusSeeOther)
 		return false
 	}
 	return true
